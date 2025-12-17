@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wesheild | Premier Facility Management Bangalore</title>
+    <meta name="description" content="Complete facility management services in Bangalore including Pest Control, MEP, Deep Cleaning, and Tank Cleaning.">
+    
+    <!-- Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+    <!-- GSAP & Lenis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B0F19', 
+                            blue: '#2563eb',
+                            glass: 'rgba(255, 255, 255, 0.4)',
+                            glassBorder: 'rgba(255, 255, 255, 0.5)',
+                            surface: '#f8fafc',
+                        }
+                    },
+                    animation: {
+                        'marquee-fast': 'marquee 15s linear infinite',
+                        'marquee-slow': 'marquee 40s linear infinite',
+                        'vertical-marquee': 'verticalMarquee 1.5s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        verticalMarquee: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Lenis Scroll Styling */
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        body {
+            background: linear-gradient(180deg, #BFDBFE 0%, #FFFFFF 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #0f172a;
+            position: relative;
+        }
+        
+        /* Noise Texture */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* --- 3D Scanner Stage --- */
+        .scanner-container {
+            perspective: 1200px;
+            overflow: hidden; 
+        }
+
+        .image-layer {
+            will-change: transform, clip-path;
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Custom Scan Line Glow */
+        .scan-line-shadow {
+            box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6, 0 0 45px #3b82f6;
+        }
+
+        /* Dirty Layer Noise Texture */
+        .noise-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            mix-blend-mode: overlay;
+        }
+
+        /* --- Liquid Glass Principles --- */
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+        }
+
+        /* Glass Buttons */
+        .btn-glass-primary {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(4px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        .btn-glass-primary:hover {
+            background: rgba(15, 23, 42, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .service-card-hover:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Horizontal Scroll Service Card Specifics */
+        .service-card-horizontal {
+            width: 85vw;
+            max-width: 400px;
+            height: auto;
+            min-height: 350px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+
+    <!-- Navbar: Liquid Glass Pill -->
+    <!-- top-4 for mobile, top-6 for desktop -->
+    <nav class="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500">
+        <div class="glass-pill rounded-full px-2 py-2 flex items-center justify-between">
+            
+            <!-- Logo Area (Left) -->
+            <a href="#" class="flex items-center gap-3 px-4 py-2 group">
+                <div class="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-blue-600 shadow-sm">
+                    <span class="iconify text-lg" data-icon="solar:shield-check-bold"></span>
+                </div>
+                <span class="font-heading font-bold text-lg tracking-tight text-slate-900 group-hover:text-blue-700 transition-colors">Wesheild</span>
+            </a>
+
+            <!-- Desktop Menu (Center) -->
+            <div class="hidden md:flex items-center gap-1 bg-white/10 rounded-full px-2 py-1.5 border border-white/20 backdrop-blur-sm">
+                <a href="#scanner-hero" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Home</a>
+                <a href="#services-pin-wrapper" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Services</a>
+                <a href="#about" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Stories</a>
+                <a href="#contact" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Contact</a>
+            </div>
+
+            <!-- Action Area (Right) -->
+            <div class="flex items-center gap-2 pr-2">
+                <a href="tel:+917994729522" class="hidden sm:flex items-center gap-2 px-6 py-2.5 btn-glass-primary rounded-full text-sm font-semibold tracking-wide">
+                    Call Now
+                    <span class="iconify group-hover:translate-x-0.5 transition-transform" data-icon="heroicons:phone-20-solid"></span>
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/60 transition-colors text-slate-800">
+                    <span class="iconify text-xl" data-icon="heroicons:bars-3-bottom-right-20-solid"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO: DIGITAL SCANNER & RESTORATION -->
+    <!-- Removed z-0, let it sit naturally in the stack, handled by GSAP pin-spacer -->
+    <section id="scanner-hero" class="relative w-full h-screen bg-black scanner-container">
+        
+        <!-- WRAPPER: Pinned during scroll -->
+        <div id="scan-wrapper" class="relative w-full h-full transform-style-3d">
+
+            <!-- 1. DIRTY LAYER (Background / "Before") -->
+            <div class="image-layer z-0" id="dirty-layer">
+                <!-- Placeholder Image -->
+                <div class="absolute inset-0 bg-cover bg-center filter grayscale contrast-125 brightness-50 sepia-[.3]" 
+                     style="background-image: url('3.png'); transform: scale(1.1);">
+                </div>
+                <!-- Noise & Vignette -->
+                <div class="absolute inset-0 noise-overlay"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80"></div>
+                
+                <!-- "Before" Text (Glitched) -->
+                <div class="absolute inset-0 flex items-center justify-center z-10 opacity-60">
+                    <h1 class="font-heading text-[12vw] font-bold text-transparent bg-clip-text bg-gradient-to-b from-slate-400 to-slate-800 tracking-tighter mix-blend-overlay blur-[2px]">
+                        UNMANAGED?
+                    </h1>
+                </div>
+            </div>
+
+            <!-- 2. CLEAN LAYER (Foreground / "After") -->
+            <!-- Revealed by clip-path -->
+            <div class="image-layer z-10" id="clean-layer" style="clip-path: inset(0 0 100% 0);">
+                <!-- Placeholder Image -->
+                <div class="absolute inset-0 bg-cover bg-center" 
+                     style="background-image: url('4.png');">
+                </div>
+                
+                <!-- "After" Text (Sharp) -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center z-20">
+                    <!-- Glass Wrapper for improved visibility -->
+                    <div class="bg-black/20 backdrop-blur-md border border-white/10 p-8 sm:p-12 rounded-[2rem] text-center shadow-2xl">
+                        <h1 class="font-heading text-[12vw] font-bold text-white tracking-tighter drop-shadow-2xl leading-none">
+                            Wesheild
+                        </h1>
+                        <p class="font-heading text-[4vw] font-bold text-white tracking-wide drop-shadow-lg mt-2">
+                            can fix it!
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Subtitle (Revealed at end) -->
+                <div class="absolute bottom-32 w-full text-center z-30 opacity-0" id="hero-subtitle">
+                     <p class="text-white/80 text-xl font-medium tracking-wide">Facility Management Reimagined.</p>
+                </div>
+            </div>
+
+            <!-- 3. SCANNER BAR (The laser) -->
+            <div id="scanner-bar" class="absolute top-0 left-0 w-full h-[4px] bg-blue-400 z-50 scan-line-shadow opacity-0">
+                <!-- Glowing ends -->
+                <div class="absolute top-1/2 left-0 -translate-y-1/2 w-full h-[50px] bg-blue-500/20 blur-xl"></div>
+                <div class="absolute left-10 -top-3 px-2 py-1 bg-blue-600 text-[10px] font-mono text-white rounded-sm">
+                    CLEANING...
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Scroll Prompt -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 text-white text-center" id="scroll-prompt">
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase opacity-70 mb-2 block animate-pulse">Scroll to Clean</span>
+            <div class="w-[1px] h-12 bg-white/30 mx-auto overflow-hidden">
+                <div class="w-full h-full bg-white animate-vertical-marquee"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Services Section (Horizontal Scroll) -->
+    <!-- Explicit z-20 and bg-brand-surface ensures it covers the previous section cleanly -->
+    <section id="services-pin-wrapper" class="relative h-screen overflow-hidden bg-brand-surface z-20">
+        
+        <!-- Sticky Header (Stays on left) -->
+        <!-- Adjusted top for mobile (top-20) vs desktop (top-32) -->
+        <div id="services-header" class="absolute top-24 md:top-32 left-6 md:left-20 z-20 max-w-sm pointer-events-none">
+            <span class="text-blue-700 font-bold tracking-widest uppercase text-xs">Our Expertise</span>
+            <h2 class="font-heading text-4xl md:text-5xl font-bold text-slate-900 mt-3 mb-4 leading-tight">Complete <br>Facility Care</h2>
+            <p class="text-slate-600 font-medium">Professional services tailored for modern infrastructure.</p>
+        </div>
+
+        <!-- Horizontal Track -->
+        <!-- Reduced padding pt-10 for mobile -->
+        <div id="services-track" class="flex h-full items-center pl-6 md:pl-20 gap-8 pt-10 md:pt-20">
+            <!-- Spacer to push cards past the header. Reduced on mobile to bring cards closer. -->
+            <div class="w-[15vw] md:w-[450px] flex-shrink-0"></div>
+
+            <!-- Service 1: Pest Control -->
+            <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
+                <div>
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm border border-blue-50 text-blue-600 group-hover:scale-110 transition-transform">
+                        <span class="iconify text-4xl" data-icon="solar:bug-minimalistic-bold-duotone"></span>
+                    </div>
+                    <h3 class="font-heading text-3xl font-bold text-slate-900 mb-4">Pest Control</h3>
+                    <p class="text-slate-500 text-lg leading-relaxed">Eco-friendly treatments for termites, rodents, and insects.</p>
+                </div>
+            </div>
+
+            <!-- Service 2: MEP Solutions -->
+            <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
+                <div>
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm border border-orange-50 text-orange-500 group-hover:scale-110 transition-transform">
+                        <span class="iconify text-4xl" data-icon="solar:settings-bold-duotone"></span>
+                    </div>
+                    <h3 class="font-heading text-3xl font-bold text-slate-900 mb-4">MEP Solutions</h3>
+                    <p class="text-slate-500 text-lg leading-relaxed">Mechanical, Electrical, and Plumbing maintenance experts.</p>
+                </div>
+            </div>
+
+            <!-- Service 3: Deep Cleaning -->
+            <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
+                <div>
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm border border-teal-50 text-teal-600 group-hover:scale-110 transition-transform">
+                        <span class="iconify text-4xl" data-icon="solar:broom-bold-duotone"></span>
+                    </div>
+                    <h3 class="font-heading text-3xl font-bold text-slate-900 mb-4">Deep Cleaning</h3>
+                    <p class="text-slate-500 text-lg leading-relaxed">Intensive sanitization for homes and corporate offices.</p>
+                </div>
+            </div>
+
+            <!-- Service 4: Tank Cleaning -->
+            <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
+                <div>
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm border border-cyan-50 text-cyan-600 group-hover:scale-110 transition-transform">
+                        <span class="iconify text-4xl" data-icon="solar:waterdrops-bold-duotone"></span>
+                    </div>
+                    <h3 class="font-heading text-3xl font-bold text-slate-900 mb-4">Tank Cleaning</h3>
+                    <p class="text-slate-500 text-lg leading-relaxed">Mechanized sludge removal and UV sterilization.</p>
+                </div>
+            </div>
+
+            <!-- Service 5: Homepro AMC -->
+            <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
+                <div>
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm border border-purple-50 text-purple-600 group-hover:scale-110 transition-transform">
+                        <span class="iconify text-4xl" data-icon="solar:home-smile-bold-duotone"></span>
+                    </div>
+                    <h3 class="font-heading text-3xl font-bold text-slate-900 mb-4">Homepro AMC</h3>
+                    <p class="text-slate-500 text-lg leading-relaxed">Annual maintenance contracts covering all home repairs.</p>
+                </div>
+            </div>
+
+            <!-- CTA Card -->
+            <div class="service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center service-card-hover bg-brand-blue text-white relative overflow-hidden shadow-2xl border border-white/20">
+                <div class="w-20 h-20 rounded-3xl bg-white/20 flex items-center justify-center mb-8 backdrop-blur-md">
+                    <span class="iconify text-4xl text-white" data-icon="solar:tuning-square-2-bold-duotone"></span>
+                </div>
+                <h3 class="font-heading text-3xl font-bold text-white mb-4">Custom Plans</h3>
+                <p class="text-blue-100 text-lg leading-relaxed mb-8">Tailored solutions for large societies.</p>
+                <!-- Updated WhatsApp Link -->
+                <a href="https://wa.me/917994729522" target="_blank" class="px-8 py-3 bg-white text-blue-700 rounded-full text-sm font-bold uppercase tracking-wide hover:shadow-lg transition-shadow flex items-center gap-2">
+                    <span class="iconify text-lg" data-icon="ri:whatsapp-fill"></span> Enquire Now
+                </a>
+            </div>
+
+            <!-- End Spacer -->
+            <div class="w-20 flex-shrink-0"></div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <!-- Adjusted padding to py-12 md:py-24 for mobile -->
+    <section id="about" class="py-12 md:py-24 bg-brand-surface overflow-hidden relative">
+        <div class="container mx-auto px-6 mb-12 text-center relative z-10">
+            <span class="text-brand-blue font-bold tracking-wider uppercase text-sm">Customer Stories</span>
+            <h2 class="font-heading text-4xl font-bold text-slate-900 mt-2 mb-4">Trusted by Bangalore's Best</h2>
+            <p class="text-slate-600 max-w-2xl mx-auto">See what property managers and homeowners have to say about our facility management services.</p>
+        </div>
+
+        <!-- Scrolling Wrapper -->
+        <div class="relative w-full overflow-hidden">
+             <!-- Gradient Masks for smooth fade edges -->
+            <div class="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-brand-surface to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-brand-surface to-transparent z-10 pointer-events-none"></div>
+
+            <div class="flex animate-marquee-slow gap-6 w-max hover:[animation-play-state:paused]">
+                <!-- Testimonial Cards Set 1 -->
+                <div class="flex gap-6">
+                    <!-- Card 1 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Anita Sharma</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Rahul Menon</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Vikram K.</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duplicate Set for Infinite Loop -->
+                <div class="flex gap-6">
+                    <!-- Card 1 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Anita Sharma</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Rahul Menon</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
+                        <div class="flex gap-1 text-yellow-400 mb-6">
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                            <span class="iconify" data-icon="solar:star-bold"></span>
+                        </div>
+                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
+                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Vikram K.</h4>
+                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee Clients -->
+    <section class="py-10 border-y border-blue-600 bg-brand-blue overflow-hidden">
+        <div class="flex animate-marquee-fast whitespace-nowrap">
+            <!-- Set 1 -->
+            <div class="flex items-center gap-20 mx-10 text-white font-bold text-xl tracking-tighter">
+                <span>PRESTIGE GROUP</span>
+                <span>SOBHA LTD</span>
+                <span>EMBASSY PARKS</span>
+                <span>BRIGADE</span>
+                <span>WIPRO FACILITIES</span>
+                <span>INFOSYS CAMPUS</span>
+            </div>
+            <!-- Set 2 -->
+            <div class="flex items-center gap-20 mx-10 text-white font-bold text-xl tracking-tighter">
+                <span>PRESTIGE GROUP</span>
+                <span>SOBHA LTD</span>
+                <span>EMBASSY PARKS</span>
+                <span>BRIGADE</span>
+                <span>WIPRO FACILITIES</span>
+                <span>INFOSYS CAMPUS</span>
+            </div>
+            <!-- Set 3 (Added for smoother looping on wider screens) -->
+            <div class="flex items-center gap-20 mx-10 text-white font-bold text-xl tracking-tighter">
+                <span>PRESTIGE GROUP</span>
+                <span>SOBHA LTD</span>
+                <span>EMBASSY PARKS</span>
+                <span>BRIGADE</span>
+                <span>WIPRO FACILITIES</span>
+                <span>INFOSYS CAMPUS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <!-- Compact Padding for Mobile (py-12) -->
+    <section id="contact" class="py-12 md:py-24">
+        <div class="container mx-auto px-6">
+            <!-- Reduced padding inside card for mobile p-6 md:p-12 lg:p-20 -->
+            <div class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-20 relative overflow-hidden bg-slate-900/95 border-slate-800">
+                
+                <!-- Glow Effect inside card -->
+                <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/30 rounded-full blur-[100px] -mr-20 -mt-20"></div>
+
+                <div class="grid lg:grid-cols-2 gap-12 relative z-10 items-center">
+                    <div>
+                        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight">Ready to upgrade?</h2>
+                        <p class="text-slate-400 text-lg mb-8 font-medium">Get a free consultation for your property in Bangalore.</p>
+                        
+                        <!-- Updated Call Action -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="tel:+917994729522" class="px-8 py-4 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2 group w-full sm:w-auto">
+                                <span class="iconify text-xl group-hover:animate-pulse" data-icon="solar:phone-calling-bold"></span>
+                                Call Us Now
+                            </a>
+                            <a href="https://wa.me/917994729522" target="_blank" class="px-8 py-4 bg-white/10 border border-white/10 text-white rounded-full font-bold hover:bg-white/20 transition-colors shadow-lg flex items-center justify-center gap-2 group w-full sm:w-auto backdrop-blur-md">
+                                <span class="iconify text-xl text-green-400 group-hover:scale-110 transition-transform" data-icon="ri:whatsapp-fill"></span>
+                                Let's Chat
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Side: Mini Google Map Card -->
+                    <div class="w-full h-full min-h-[280px]">
+                        <div class="relative w-full h-full bg-slate-800 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl group isolate">
+                            
+                            <!-- Google Map Embed (Filtered for Dark Theme) -->
+                            <iframe 
+                                src="https://maps.google.com/maps?q=Wesheild%2C%203rd%20Floor%2C%20Raj%20Pinnacle%2C%206th%20Cross%20Rd%2C%20Doddanakundi%20Industrial%20Area%202%2C%20Bengaluru%2C%20Karnataka%20560048&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                                width="100%" 
+                                height="100%" 
+                                style="border:0; filter: grayscale(1) invert(0.9) contrast(1.2) brightness(0.8);" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                class="absolute inset-0 w-full h-full object-cover transition-all duration-700 pointer-events-none group-hover:opacity-80 opacity-60"
+                            ></iframe>
+
+                            <!-- Gradient Overlay for Text Readability -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/40 to-transparent z-10 pointer-events-none"></div>
+
+                            <!-- Content Overlay -->
+                            <div class="relative z-20 h-full flex flex-col justify-end p-8 sm:p-10">
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/20 shadow-lg">
+                                            <span class="iconify text-2xl text-green-400 animate-[bounce_2s_infinite]" data-icon="solar:map-point-bold-duotone"></span>
+                                        </div>
+                                        <h4 class="text-white font-bold text-2xl mb-1 tracking-tight">Visit us</h4>
+                                        <p class="text-slate-300 text-sm font-medium">Doddanakundi, Bengaluru</p>
+                                    </div>
+                                    
+                                    <!-- Direction Button -->
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Wesheild,+3rd+Floor,+Raj+Pinnacle,+6th+Cross+Rd,+Doddanakundi+Industrial+Area+2,+Bengaluru,+Karnataka+560048" target="_blank" class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-500 hover:scale-110 transition-all shadow-lg cursor-pointer pointer-events-auto group/btn">
+                                        <span class="iconify text-2xl group-hover/btn:rotate-45 transition-transform duration-300" data-icon="solar:arrow-right-up-bold"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <!-- Compact py-8 for mobile -->
+    <footer class="py-8 md:py-12 border-t border-white/30 bg-white/20 backdrop-blur-sm">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                    <span class="iconify" data-icon="solar:shield-check-bold"></span>
+                </div>
+                <span class="font-heading font-bold text-xl text-slate-900">Wesheild</span>
+            </div>
+            
+            <p class="text-slate-600 text-sm">© 2025 Wesheild Facility Management. Bangalore, India.</p>
+            
+            <div class="flex gap-4">
+                <a href="https://www.instagram.com/wesheildgroup/" target="_blank" class="text-slate-500 hover:text-blue-600 transition-colors"><span class="iconify text-xl" data-icon="ri:instagram-fill"></span></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // 1. Lenis
+        const lenis = new Lenis({ duration: 1.2, smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // 2. GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        window.onload = () => {
+            // --- SCANNER ANIMATION ---
+            const hero = document.getElementById('scanner-hero');
+            const scannerBar = document.getElementById('scanner-bar');
+            const cleanLayer = document.getElementById('clean-layer');
+            const dirtyLayer = document.getElementById('dirty-layer');
+
+            const tlScan = gsap.timeline({
+                scrollTrigger: {
+                    trigger: hero,
+                    start: "top top",
+                    end: "+=150%", // How long the scan takes
+                    pin: true,
+                    scrub: 1,
+                }
+            });
+
+            // A. Move the Bar Down
+            tlScan.to(scannerBar, { top: "100%", opacity: 1, ease: "none" }, 0);
+            
+            // Scanner Opacity: Fade In fast, Fade Out at the end
+            tlScan.to(scannerBar, { opacity: 1, duration: 0.1 }, 0);
+            // Ensure it fades out well before the end
+            tlScan.to(scannerBar, { opacity: 0, duration: 0.2 }, 0.8); 
+
+            // B. Reveal the Clean Layer (Clip Path wipes down)
+            tlScan.to(cleanLayer, { clipPath: "inset(0 0 0% 0)", ease: "none" }, 0);
+
+            // C. 3D Parallax: Clean layer snaps forward, Dirty layer pushes back
+            // This creates the "Stabilization" effect
+            tlScan.fromTo(cleanLayer.querySelector('div'), { scale: 1.1 }, { scale: 1.0, ease: "none" }, 0);
+            tlScan.to(dirtyLayer.querySelector('div'), { scale: 1.2, ease: "none" }, 0);
+
+            // D. Reveal Subtitle at the end
+            tlScan.to("#hero-subtitle", { opacity: 1, y: -20, duration: 0.2 }, 0.9);
+            tlScan.to("#scroll-prompt", { opacity: 0, duration: 0.2 }, 0);
+
+            // --- SERVICES HORIZONTAL SCROLL ---
+            const track = document.getElementById("services-track");
+            const pinWrapper = document.getElementById("services-pin-wrapper");
+            const servicesHeader = document.getElementById("services-header");
+            
+            if(track && pinWrapper) {
+                // Calculate scroll amount: Total width of track minus viewport width
+                const getScrollAmount = () => -(track.scrollWidth - window.innerWidth);
+                
+                const tlServices = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: pinWrapper,
+                        start: "top top",
+                        end: () => `+=${Math.abs(getScrollAmount())}`, // Scroll distance equals horizontal length
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true,
+                    }
+                });
+
+                // Move Track Left (Main Animation)
+                // We set duration to 1 so we can easily map the text fade relative to it
+                tlServices.to(track, {
+                    x: getScrollAmount,
+                    ease: "none",
+                    duration: 1 
+                });
+
+                // Fade Out Header Text FASTER
+                // Duration 0.15 means it fades out in the first 15% of the scroll distance
+                if (servicesHeader) {
+                    tlServices.to(servicesHeader, {
+                        opacity: 0,
+                        x: -50, // Move left slightly
+                        duration: 0.15, 
+                        ease: "power2.out" 
+                    }, 0); // Start at time 0 (beginning of scroll)
+                }
+            }
+        };
+    </script>
+</body>
+</html>

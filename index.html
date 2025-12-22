@@ -42,6 +42,8 @@
                     animation: {
                         'marquee-fast': 'marquee 15s linear infinite',
                         'marquee-slow': 'marquee 40s linear infinite',
+                        /* Slower animation for the longer list of reviews */
+                        'marquee-super-slow': 'marquee 80s linear infinite',
                         'vertical-marquee': 'verticalMarquee 1.5s linear infinite',
                     },
                     keyframes: {
@@ -60,6 +62,40 @@
     </script>
 
     <style>
+        /* --- EASY CONFIGURATION --- */
+        /* Edit these values to adjust positions, sizes, and colors globally */
+        :root {
+            /* HERO TEXT POSITION (0% is top/left, 50% is center, 100% is bottom/right) */
+            --hero-text-x: 50%;
+            --hero-text-y: 18%; /* Moved higher to target sky/white space */
+            
+            /* HERO IMAGE POSITION (Focus point of the building) */
+            --hero-bg-pos-x: center; 
+            --hero-bg-pos-y: center;
+
+            /* SIZING */
+            --hero-text-size: 12vw; /* Font size for UNMANAGED/WESHEILD */
+            
+            /* COLORS */
+            --color-primary: #2563eb;   /* Brand Blue */
+            --color-bg-start: #BFDBFE;  /* Light Blue Gradient Start */
+            --color-bg-end: #FFFFFF;    /* White Gradient End */
+
+            /* --- RESPONSIVE IMAGES CONFIGURATION --- */
+            /* DESKTOP IMAGES (Default) */
+            --bg-dirty: url('https://i.postimg.cc/yYQNVbqz/7.jpg');
+            --bg-clean: url('https://i.postimg.cc/0yDhtz0S/8.jpg');
+        }
+
+        /* MOBILE IMAGES OVERRIDE */
+        @media (max-width: 768px) {
+            :root {
+                /* Replace these URLs with your specific mobile versions */
+                --bg-dirty: url('https://i.postimg.cc/kGFVg86P/11.jpg'); 
+                --bg-clean: url('https://i.postimg.cc/ryWrhctB/10.jpg');
+            }
+        }
+
         /* Lenis Scroll Styling */
         html.lenis, html.lenis body { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
@@ -67,7 +103,7 @@
         .lenis.lenis-stopped { overflow: hidden; }
 
         body {
-            background: linear-gradient(180deg, #BFDBFE 0%, #FFFFFF 100%);
+            background: linear-gradient(180deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
             background-attachment: fixed;
             min-height: 100vh;
             color: #0f172a;
@@ -100,12 +136,30 @@
             position: absolute;
             inset: 0;
             background-size: cover;
-            background-position: center;
+            /* Use Variables for Image Position */
+            background-position: var(--hero-bg-pos-x) var(--hero-bg-pos-y);
+        }
+        
+        /* Text Positioning Class */
+        .hero-text-position {
+            position: absolute;
+            top: var(--hero-text-y);
+            left: var(--hero-text-x);
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            /* Ensure pointer events don't block scroll if text covers huge area */
+            pointer-events: none; 
+        }
+        
+        .hero-title {
+            font-size: var(--hero-text-size);
+            line-height: 1;
         }
 
         /* Custom Scan Line Glow */
         .scan-line-shadow {
-            box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6, 0 0 45px #3b82f6;
+            box-shadow: 0 0 15px var(--color-primary), 0 0 30px var(--color-primary), 0 0 45px var(--color-primary);
         }
 
         /* Dirty Layer Noise Texture */
@@ -130,6 +184,86 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+        }
+
+        /* Animated Glass Pill for Hero Text */
+        .glass-pill-animated {
+            display: inline-block;
+            /* Lighter, more transparent background */
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            /* Lighter border */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 12px 32px;
+            border-radius: 9999px;
+            color: #000000; /* Pure black */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 500; /* font-medium */
+            letter-spacing: 0.025em; /* tracking-wide */
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: pulse-border 2s infinite alternate;
+        }
+        
+        /* The moving sheen effect */
+        .glass-pill-animated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: 0.5s;
+            animation: shine-border 3s infinite;
+        }
+
+        @keyframes shine-border {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes pulse-border {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.05), inset 0 0 0 rgba(255,255,255,0.05);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            100% {
+                box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.15), inset 0 0 10px rgba(255,255,255,0.05);
+                border-color: rgba(255, 255, 255, 0.25);
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .glass-pill-animated {
+                font-size: 1.25rem; /* md:text-xl */
+            }
+        }
+
+        /* Mobile Menu Animation */
+        #mobile-menu {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: top center;
+        }
+        .mobile-menu-closed {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+            pointer-events: none;
+            visibility: hidden; /* Added visibility hidden to ensure it doesn't block clicks */
+        }
+        .mobile-menu-open {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+            visibility: visible;
         }
 
         /* Glass Buttons */
@@ -164,24 +298,24 @@
 <body class="antialiased overflow-x-hidden">
 
     <!-- Navbar: Liquid Glass Pill -->
-    <!-- top-4 for mobile, top-6 for desktop -->
     <nav class="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500">
-        <div class="glass-pill rounded-full px-2 py-2 flex items-center justify-between">
+        <div class="glass-pill rounded-full px-2 py-2 flex items-center justify-between relative z-50 bg-white/10">
             
             <!-- Logo Area (Left) -->
             <a href="#" class="flex items-center gap-3 px-4 py-2 group">
                 <div class="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-blue-600 shadow-sm">
                     <span class="iconify text-lg" data-icon="solar:shield-check-bold"></span>
                 </div>
-                <span class="font-heading font-bold text-lg tracking-tight text-slate-900 group-hover:text-blue-700 transition-colors">Wesheild</span>
+                <!-- UPDATED: Changed class from text-slate-900 to text-white, Added ID -->
+                <span id="nav-brand-text" class="font-heading font-bold text-lg tracking-tight text-white group-hover:text-blue-700 transition-colors">Wesheild</span>
             </a>
 
             <!-- Desktop Menu (Center) -->
             <div class="hidden md:flex items-center gap-1 bg-white/10 rounded-full px-2 py-1.5 border border-white/20 backdrop-blur-sm">
-                <a href="#scanner-hero" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Home</a>
-                <a href="#services-pin-wrapper" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Services</a>
-                <a href="#about" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Stories</a>
-                <a href="#contact" class="px-5 py-1.5 text-sm font-medium text-slate-800 hover:text-black hover:bg-white/30 rounded-full transition-all">Contact</a>
+                <a href="#scanner-hero" class="desktop-link px-5 py-1.5 text-sm font-medium text-white hover:text-black hover:bg-white/30 rounded-full transition-all">Home</a>
+                <a href="#services-pin-wrapper" class="desktop-link px-5 py-1.5 text-sm font-medium text-white hover:text-black hover:bg-white/30 rounded-full transition-all">Services</a>
+                <a href="#about" class="desktop-link px-5 py-1.5 text-sm font-medium text-white hover:text-black hover:bg-white/30 rounded-full transition-all">Stories</a>
+                <a href="#contact" class="desktop-link px-5 py-1.5 text-sm font-medium text-white hover:text-black hover:bg-white/30 rounded-full transition-all">Contact</a>
             </div>
 
             <!-- Action Area (Right) -->
@@ -192,15 +326,29 @@
                 </a>
                 
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/60 transition-colors text-slate-800">
-                    <span class="iconify text-xl" data-icon="heroicons:bars-3-bottom-right-20-solid"></span>
+                <!-- Explicit z-index and relative positioning to ensure it's clickable -->
+                <button id="mobile-menu-btn" class="md:hidden relative z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/60 transition-colors text-slate-800 cursor-pointer">
+                    <span class="iconify text-xl pointer-events-none" data-icon="heroicons:bars-3-bottom-right-20-solid"></span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown (Added Structure) -->
+        <div id="mobile-menu" class="mobile-menu-closed absolute top-full left-0 w-full pt-4 md:hidden z-40">
+            <div class="glass-card rounded-[2rem] p-6 flex flex-col gap-2 shadow-2xl bg-white/90 backdrop-blur-xl border border-white/40">
+                <a href="#scanner-hero" class="mobile-link w-full py-4 text-center text-slate-800 font-semibold text-lg border-b border-slate-200/50 hover:bg-white/50 rounded-xl transition-colors">Home</a>
+                <a href="#services-pin-wrapper" class="mobile-link w-full py-4 text-center text-slate-800 font-semibold text-lg border-b border-slate-200/50 hover:bg-white/50 rounded-xl transition-colors">Services</a>
+                <a href="#about" class="mobile-link w-full py-4 text-center text-slate-800 font-semibold text-lg border-b border-slate-200/50 hover:bg-white/50 rounded-xl transition-colors">Stories</a>
+                <a href="#contact" class="mobile-link w-full py-4 text-center text-slate-800 font-semibold text-lg hover:bg-white/50 rounded-xl transition-colors">Contact</a>
+                
+                <a href="tel:+917994729522" class="mt-4 w-full py-4 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    <span class="iconify" data-icon="solar:phone-calling-bold"></span> Call Now
+                </a>
             </div>
         </div>
     </nav>
 
     <!-- HERO: DIGITAL SCANNER & RESTORATION -->
-    <!-- Removed z-0, let it sit naturally in the stack, handled by GSAP pin-spacer -->
     <section id="scanner-hero" class="relative w-full h-screen bg-black scanner-container">
         
         <!-- WRAPPER: Pinned during scroll -->
@@ -208,50 +356,39 @@
 
             <!-- 1. DIRTY LAYER (Background / "Before") -->
             <div class="image-layer z-0" id="dirty-layer">
-                <!-- Placeholder Image -->
-                <div class="absolute inset-0 bg-cover bg-center filter grayscale contrast-125 brightness-50 sepia-[.3]" 
-                     style="background-image: url('3.png'); transform: scale(1.1);">
+                <!-- Placeholder Image (Replaced with Unsplash for functionality) -->
+                <!-- Uses CSS Variable var(--bg-dirty) which switches based on screen size -->
+                <div class="absolute inset-0 bg-cover filter grayscale contrast-125 brightness-50 sepia-[.3]" 
+                     style="background-image: var(--bg-dirty); transform: scale(1.1); background-position: var(--hero-bg-pos-x) var(--hero-bg-pos-y);">
                 </div>
                 <!-- Noise & Vignette -->
                 <div class="absolute inset-0 noise-overlay"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80"></div>
                 
-                <!-- "Before" Text (Glitched) -->
-                <div class="absolute inset-0 flex items-center justify-center z-10 opacity-60">
-                    <h1 class="font-heading text-[12vw] font-bold text-transparent bg-clip-text bg-gradient-to-b from-slate-400 to-slate-800 tracking-tighter mix-blend-overlay blur-[2px]">
-                        UNMANAGED?
-                    </h1>
-                </div>
+                <!-- Text removed to allow embedded image text -->
             </div>
 
             <!-- 2. CLEAN LAYER (Foreground / "After") -->
             <!-- Revealed by clip-path -->
             <div class="image-layer z-10" id="clean-layer" style="clip-path: inset(0 0 100% 0);">
-                <!-- Placeholder Image -->
-                <div class="absolute inset-0 bg-cover bg-center" 
-                     style="background-image: url('4.png');">
+                <!-- Placeholder Image (Replaced with Unsplash for functionality) -->
+                 <!-- Uses CSS Variable var(--bg-clean) which switches based on screen size -->
+                <div class="absolute inset-0 bg-cover" 
+                     style="background-image: var(--bg-clean); background-position: var(--hero-bg-pos-x) var(--hero-bg-pos-y);">
                 </div>
                 
-                <!-- "After" Text (Sharp) -->
-                <div class="absolute inset-0 flex flex-col items-center justify-center z-20">
-                    <!-- Glass Wrapper for improved visibility -->
-                    <div class="bg-black/20 backdrop-blur-md border border-white/10 p-8 sm:p-12 rounded-[2rem] text-center shadow-2xl">
-                        <h1 class="font-heading text-[12vw] font-bold text-white tracking-tighter drop-shadow-2xl leading-none">
-                            Wesheild
-                        </h1>
-                        <p class="font-heading text-[4vw] font-bold text-white tracking-wide drop-shadow-lg mt-2">
-                            can fix it!
-                        </p>
-                    </div>
-                </div>
+                <!-- Text removed to allow embedded image text -->
                 
                 <!-- Subtitle (Revealed at end) -->
-                <div class="absolute bottom-32 w-full text-center z-30 opacity-0" id="hero-subtitle">
-                     <p class="text-white/80 text-xl font-medium tracking-wide">Facility Management Reimagined.</p>
+                <div class="absolute bottom-32 w-full text-center z-30 opacity-0 px-4" id="hero-subtitle">
+                     <div class="glass-pill-animated">
+                        Facility Management Reimagined.
+                     </div>
                 </div>
             </div>
 
             <!-- 3. SCANNER BAR (The laser) -->
+            <!-- Background color uses var(--color-primary) via JS or CSS class overrides if needed, kept as bg-blue-400 for now to match Tailwind config -->
             <div id="scanner-bar" class="absolute top-0 left-0 w-full h-[4px] bg-blue-400 z-50 scan-line-shadow opacity-0">
                 <!-- Glowing ends -->
                 <div class="absolute top-1/2 left-0 -translate-y-1/2 w-full h-[50px] bg-blue-500/20 blur-xl"></div>
@@ -277,18 +414,18 @@
     <section id="services-pin-wrapper" class="relative h-screen overflow-hidden bg-brand-surface z-20">
         
         <!-- Sticky Header (Stays on left) -->
-        <!-- Adjusted top for mobile (top-20) vs desktop (top-32) -->
-        <div id="services-header" class="absolute top-24 md:top-32 left-6 md:left-20 z-20 max-w-sm pointer-events-none">
+        <!-- Adjusted top for mobile (top-24) vs desktop (top-32) -->
+        <div id="services-header" class="absolute top-24 md:top-32 left-6 md:left-20 z-20 max-w-sm pointer-events-none pr-4">
             <span class="text-blue-700 font-bold tracking-widest uppercase text-xs">Our Expertise</span>
             <h2 class="font-heading text-4xl md:text-5xl font-bold text-slate-900 mt-3 mb-4 leading-tight">Complete <br>Facility Care</h2>
-            <p class="text-slate-600 font-medium">Professional services tailored for modern infrastructure.</p>
+            <p class="text-slate-600 font-medium text-sm md:text-base">Professional services tailored for modern infrastructure.</p>
         </div>
 
         <!-- Horizontal Track -->
         <!-- Reduced padding pt-10 for mobile -->
-        <div id="services-track" class="flex h-full items-center pl-6 md:pl-20 gap-8 pt-10 md:pt-20">
+        <div id="services-track" class="flex h-full items-center pl-6 md:pl-20 gap-6 md:gap-8 pt-10 md:pt-20">
             <!-- Spacer to push cards past the header. Reduced on mobile to bring cards closer. -->
-            <div class="w-[15vw] md:w-[450px] flex-shrink-0"></div>
+            <div class="w-[5vw] md:w-[450px] flex-shrink-0"></div>
 
             <!-- Service 1: Pest Control -->
             <div class="glass-card service-card-horizontal rounded-[2.5rem] p-8 flex flex-col justify-center hover:bg-white/80 transition-all duration-300 cursor-pointer group">
@@ -375,125 +512,311 @@
         <!-- Scrolling Wrapper -->
         <div class="relative w-full overflow-hidden">
              <!-- Gradient Masks for smooth fade edges -->
-            <div class="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-brand-surface to-transparent z-10 pointer-events-none"></div>
-            <div class="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-brand-surface to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 left-0 h-full w-12 md:w-32 bg-gradient-to-r from-brand-surface to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 h-full w-12 md:w-32 bg-gradient-to-l from-brand-surface to-transparent z-10 pointer-events-none"></div>
 
-            <div class="flex animate-marquee-slow gap-6 w-max hover:[animation-play-state:paused]">
-                <!-- Testimonial Cards Set 1 -->
-                <div class="flex gap-6">
+            <div class="flex animate-marquee-super-slow w-max hover:[animation-play-state:paused] cursor-grab active:cursor-grabbing">
+                
+                <!-- ORIGINAL SET (7 Reviews) -->
+                <div class="flex">
                     <!-- Card 1 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                        </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Anita Sharma</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Anita Sharma</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <!-- Card 2 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold-duotone"></span>
-                        </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Rahul Menon</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Rahul Menon</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <!-- Card 3 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Vikram K.</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Vikram K.</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                    </div>
+
+                    <!-- Card 4 (New) -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">PR</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Dr. Priya Rao</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Villa Owner, Whitefield</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 (New) -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-lg">RG</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Rajesh Gowda</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Facility Manager, Sobha</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 (New) -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-lg">ST</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Sarah Thomas</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HSR Layout</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 7 (New) -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">AR</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Arjun Reddy</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Jayanagar</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Duplicate Set for Infinite Loop -->
-                <div class="flex gap-6">
-                    <!-- Card 1 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                        </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Anita Sharma</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                <!-- DUPLICATE SET (For Seamless Loop) -->
+                <div class="flex">
+                    <!-- Card 1 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Anita Sharma</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HR Director, TechPark</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Card 2 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold-duotone"></span>
-                        </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Rahul Menon</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+
+                    <!-- Card 2 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Rahul Menon</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Homeowner, Indiranagar</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Card 3 -->
-                    <div class="w-[300px] md:w-[400px] bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-default">
-                        <div class="flex gap-1 text-yellow-400 mb-6">
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
-                            <span class="iconify" data-icon="solar:star-bold"></span>
+
+                    <!-- Card 3 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Vikram K.</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-slate-600 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
-                        <div class="flex items-center gap-4 pt-6 border-t border-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
-                            <div>
-                                <h4 class="font-bold text-slate-900">Vikram K.</h4>
-                                <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Secretary, Palm Grove</p>
+                    </div>
+
+                    <!-- Card 4 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">PR</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Dr. Priya Rao</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Villa Owner, Whitefield</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-lg">RG</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Rajesh Gowda</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Facility Manager, Sobha</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-lg">ST</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Sarah Thomas</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">HSR Layout</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 7 Duplicate -->
+                    <div class="pr-6 md:pr-8">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                            <div class="flex gap-1 text-yellow-400 mb-6">
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold"></span>
+                                <span class="iconify" data-icon="solar:star-bold-duotone"></span>
+                            </div>
+                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
+                            <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
+                                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">AR</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Arjun Reddy</h4>
+                                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Jayanagar</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -532,10 +855,8 @@
     </section>
 
     <!-- Contact Section -->
-    <!-- Compact Padding for Mobile (py-12) -->
     <section id="contact" class="py-12 md:py-24">
         <div class="container mx-auto px-6">
-            <!-- Reduced padding inside card for mobile p-6 md:p-12 lg:p-20 -->
             <div class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-20 relative overflow-hidden bg-slate-900/95 border-slate-800">
                 
                 <!-- Glow Effect inside card -->
@@ -604,7 +925,6 @@
     </section>
 
     <!-- Footer -->
-    <!-- Compact py-8 for mobile -->
     <footer class="py-8 md:py-12 border-t border-white/30 bg-white/20 backdrop-blur-sm">
         <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-2">
@@ -624,6 +944,67 @@
 
     <!-- Scripts -->
     <script>
+        // --- MOBILE MENU LOGIC (ROBUST FIX) ---
+        // Wrapped in DOMContentLoaded to ensure elements exist
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubble conflicts
+                    
+                    // Toggle Logic based on class presence
+                    const isClosed = mobileMenu.classList.contains('mobile-menu-closed');
+                    
+                    if (isClosed) {
+                        // OPEN MENU
+                        mobileMenu.classList.remove('mobile-menu-closed');
+                        mobileMenu.classList.add('mobile-menu-open');
+                        menuBtn.classList.add('bg-white');
+                        
+                        // Dynamically find icon (in case Iconify replaced it)
+                        const icon = menuBtn.querySelector('.iconify') || menuBtn.querySelector('svg');
+                        if(icon) icon.setAttribute('data-icon', 'heroicons:x-mark-20-solid');
+                        
+                    } else {
+                        // CLOSE MENU
+                        mobileMenu.classList.remove('mobile-menu-open');
+                        mobileMenu.classList.add('mobile-menu-closed');
+                        menuBtn.classList.remove('bg-white');
+                        
+                        const icon = menuBtn.querySelector('.iconify') || menuBtn.querySelector('svg');
+                        if(icon) icon.setAttribute('data-icon', 'heroicons:bars-3-bottom-right-20-solid');
+                    }
+                });
+
+                // Close menu when clicking a link
+                const mobileLinks = document.querySelectorAll('.mobile-link');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('mobile-menu-open');
+                        mobileMenu.classList.add('mobile-menu-closed');
+                        menuBtn.classList.remove('bg-white');
+                        
+                        const icon = menuBtn.querySelector('.iconify') || menuBtn.querySelector('svg');
+                        if(icon) icon.setAttribute('data-icon', 'heroicons:bars-3-bottom-right-20-solid');
+                    });
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target) && mobileMenu.classList.contains('mobile-menu-open')) {
+                        mobileMenu.classList.remove('mobile-menu-open');
+                        mobileMenu.classList.add('mobile-menu-closed');
+                        menuBtn.classList.remove('bg-white');
+                        
+                        const icon = menuBtn.querySelector('.iconify') || menuBtn.querySelector('svg');
+                        if(icon) icon.setAttribute('data-icon', 'heroicons:bars-3-bottom-right-20-solid');
+                    }
+                });
+            }
+        });
+
         // 1. Lenis
         const lenis = new Lenis({ duration: 1.2, smooth: true });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
@@ -638,6 +1019,8 @@
             const scannerBar = document.getElementById('scanner-bar');
             const cleanLayer = document.getElementById('clean-layer');
             const dirtyLayer = document.getElementById('dirty-layer');
+            const navText = document.getElementById('nav-brand-text');
+            const navLinks = document.querySelectorAll('.desktop-link');
 
             const tlScan = gsap.timeline({
                 scrollTrigger: {
@@ -659,6 +1042,16 @@
 
             // B. Reveal the Clean Layer (Clip Path wipes down)
             tlScan.to(cleanLayer, { clipPath: "inset(0 0 0% 0)", ease: "none" }, 0);
+            
+            // NEW: Animate Nav Text Color from White to Black
+            if (navText) {
+                // Change from white to dark slate as the scan progresses
+                tlScan.to(navText, { color: "#0f172a", duration: 0.5 }, 0);
+            }
+            // NEW: Animate Nav Links from White to Slate-800
+            if (navLinks.length > 0) {
+                tlScan.to(navLinks, { color: "#1e293b", duration: 0.5 }, 0);
+            }
 
             // C. 3D Parallax: Clean layer snaps forward, Dirty layer pushes back
             // This creates the "Stabilization" effect

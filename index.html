@@ -67,7 +67,7 @@
         :root {
             /* HERO TEXT POSITION (0% is top/left, 50% is center, 100% is bottom/right) */
             --hero-text-x: 50%;
-            --hero-text-y: 18%; /* Moved higher to target sky/white space */
+            --hero-text-y: 50%; /* Centered vertically */
             
             /* HERO IMAGE POSITION (Focus point of the building) */
             --hero-bg-pos-x: center; 
@@ -83,16 +83,16 @@
 
             /* --- RESPONSIVE IMAGES CONFIGURATION --- */
             /* DESKTOP IMAGES (Default) */
-            --bg-dirty: url('https://i.postimg.cc/yYQNVbqz/7.jpg');
-            --bg-clean: url('https://i.postimg.cc/0yDhtz0S/8.jpg');
+            --bg-dirty: url('https://i.postimg.cc/tT4LFZ1s/unwatermarked-Gemini-Generated-Image-ayz0yoayz0yoayz0.png');
+            --bg-clean: url('https://i.postimg.cc/NMFz53VP/unwatermarked-Gemini-Generated-Image-j95bpmj95bpmj95b.png');
         }
 
         /* MOBILE IMAGES OVERRIDE */
         @media (max-width: 768px) {
             :root {
                 /* Replace these URLs with your specific mobile versions */
-                --bg-dirty: url('https://i.postimg.cc/kGFVg86P/11.jpg'); 
-                --bg-clean: url('https://i.postimg.cc/ryWrhctB/10.jpg');
+                --bg-dirty: url('https://i.postimg.cc/tT4LFZ1s/unwatermarked-Gemini-Generated-Image-ayz0yoayz0yoayz0.png'); 
+                --bg-clean: url('https://i.postimg.cc/NMFz53VP/unwatermarked-Gemini-Generated-Image-j95bpmj95bpmj95b.png');
             }
         }
 
@@ -365,7 +365,12 @@
                 <div class="absolute inset-0 noise-overlay"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80"></div>
                 
-                <!-- Text removed to allow embedded image text -->
+                <!-- "Before" Text (Glitched Style) -->
+                <div class="hero-text-position z-10">
+                    <h1 class="font-heading font-black text-transparent bg-clip-text bg-gradient-to-b from-gray-100 to-gray-400 tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] hero-title opacity-90" style="text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
+                        UNMANAGED?
+                    </h1>
+                </div>
             </div>
 
             <!-- 2. CLEAN LAYER (Foreground / "After") -->
@@ -377,7 +382,13 @@
                      style="background-image: var(--bg-clean); background-position: var(--hero-bg-pos-x) var(--hero-bg-pos-y);">
                 </div>
                 
-                <!-- Text removed to allow embedded image text -->
+                <!-- "After" Text (Clean Style) -->
+                <div class="hero-text-position z-20">
+                    <!-- Updated to Dark Gradient with White Glow for visibility on light backgrounds -->
+                    <h1 class="font-heading font-black text-transparent bg-clip-text bg-gradient-to-b from-blue-700 to-slate-900 tracking-tighter hero-title" style="filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));">
+                        Wesheild It!
+                    </h1>
+                </div>
                 
                 <!-- Subtitle (Revealed at end) -->
                 <div class="absolute bottom-32 w-full text-center z-30 opacity-0 px-4" id="hero-subtitle">
@@ -502,6 +513,7 @@
 
     <!-- Testimonials Section -->
     <!-- Adjusted padding to py-12 md:py-24 for mobile -->
+    <!-- Added bg-brand-surface (f8fafc) to hide grainy body bg -->
     <section id="about" class="py-12 md:py-24 bg-brand-surface overflow-hidden relative">
         <div class="container mx-auto px-6 mb-12 text-center relative z-10">
             <span class="text-brand-blue font-bold tracking-wider uppercase text-sm">Customer Stories</span>
@@ -515,13 +527,14 @@
             <div class="absolute top-0 left-0 h-full w-12 md:w-32 bg-gradient-to-r from-brand-surface to-transparent z-10 pointer-events-none"></div>
             <div class="absolute top-0 right-0 h-full w-12 md:w-32 bg-gradient-to-l from-brand-surface to-transparent z-10 pointer-events-none"></div>
 
-            <div class="flex animate-marquee-super-slow w-max hover:[animation-play-state:paused] cursor-grab active:cursor-grabbing">
+            <!-- FIXED MARQUEE: Using Tailwind hover:[animation-play-state:paused] directly -->
+            <div class="flex animate-marquee-super-slow w-max hover:[animation-play-state:paused]">
                 
                 <!-- ORIGINAL SET (7 Reviews) -->
                 <div class="flex">
                     <!-- Card 1 -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -529,7 +542,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
                                 <div>
@@ -542,7 +555,7 @@
 
                     <!-- Card 2 -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -550,7 +563,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
                                 <div>
@@ -563,7 +576,7 @@
 
                     <!-- Card 3 -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -571,7 +584,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
                                 <div>
@@ -584,7 +597,7 @@
 
                     <!-- Card 4 (New) -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -592,7 +605,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">PR</div>
                                 <div>
@@ -605,7 +618,7 @@
 
                     <!-- Card 5 (New) -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -613,7 +626,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-lg">RG</div>
                                 <div>
@@ -626,7 +639,7 @@
 
                     <!-- Card 6 (New) -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -634,7 +647,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-lg">ST</div>
                                 <div>
@@ -647,7 +660,7 @@
 
                     <!-- Card 7 (New) -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -655,7 +668,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">AR</div>
                                 <div>
@@ -671,7 +684,7 @@
                 <div class="flex">
                     <!-- Card 1 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -679,7 +692,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Wesheild's deep cleaning service was a game changer for our new office in Whitefield. They handled everything from carpets to HVAC vents with zero downtime."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue font-bold text-lg">AS</div>
                                 <div>
@@ -692,7 +705,7 @@
 
                     <!-- Card 2 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -700,7 +713,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"We subscribed to the Homepro AMC plan. It's such a relief knowing I can call one number for plumbing, electrical, or pest issues in my apartment."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-brand-green font-bold text-lg">RM</div>
                                 <div>
@@ -713,7 +726,7 @@
 
                     <!-- Card 3 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -721,7 +734,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Professional team for overhead tank cleaning. They used mechanized equipment and showed us before/after pictures. Highly recommended."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-lg">VK</div>
                                 <div>
@@ -734,7 +747,7 @@
 
                     <!-- Card 4 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -742,7 +755,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"The herbal termite treatment was exactly what we needed. Safe for our pets and completely odorless. The team was very professional."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">PR</div>
                                 <div>
@@ -755,7 +768,7 @@
 
                     <!-- Card 5 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -763,7 +776,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Our apartment's generator panel had recurring issues. Wesheild's MEP team diagnosed and fixed it in one visit. Very impressive."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-lg">RG</div>
                                 <div>
@@ -776,7 +789,7 @@
 
                     <!-- Card 6 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -784,7 +797,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"The team is incredibly punctual and polite. Booking via WhatsApp was seamless. Great service for busy professionals!"</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-lg">ST</div>
                                 <div>
@@ -797,7 +810,7 @@
 
                     <!-- Card 7 Duplicate -->
                     <div class="pr-6 md:pr-8">
-                        <div class="w-[300px] md:w-[400px] h-full glass-card p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
+                        <div class="w-[300px] md:w-[400px] h-full glass-card p-6 rounded-3xl hover:bg-white/80 transition-all duration-300 group cursor-default">
                             <div class="flex gap-1 text-yellow-400 mb-6">
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold"></span>
@@ -805,7 +818,7 @@
                                 <span class="iconify" data-icon="solar:star-bold"></span>
                                 <span class="iconify" data-icon="solar:star-bold-duotone"></span>
                             </div>
-                            <p class="text-slate-700 text-base mb-8 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
+                            <p class="text-slate-700 text-base mb-4 leading-relaxed font-medium">"Moved into a new villa that needed serious cleaning. They made the floors look brand new. Highly recommended for deep cleaning."</p>
                             <div class="flex items-center gap-4 pt-6 border-t border-slate-200/50">
                                 <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">AR</div>
                                 <div>
@@ -855,15 +868,19 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-12 md:py-24">
+    <!-- Added bg-brand-surface and z-10 to cover the grainy body background -->
+    <section id="contact" class="py-12 md:py-24 bg-brand-surface relative z-10">
         <div class="container mx-auto px-6">
-            <div class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-20 relative overflow-hidden bg-slate-900/95 border-slate-800">
+            <!-- RESTORED DARK THEME: Removed 'glass-card' class to prevent white background override. -->
+            <!-- Used manual classes for dark glass look: bg-slate-900/95 backdrop-blur-xl border-slate-800 -->
+            <div class="rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-20 relative overflow-hidden bg-slate-900/95 backdrop-blur-xl border border-slate-800 shadow-2xl">
                 
                 <!-- Glow Effect inside card -->
                 <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/30 rounded-full blur-[100px] -mr-20 -mt-20"></div>
 
                 <div class="grid lg:grid-cols-2 gap-12 relative z-10 items-center">
                     <div>
+                        <!-- Text colors confirmed for Dark Theme -->
                         <h2 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight">Ready to upgrade?</h2>
                         <p class="text-slate-400 text-lg mb-8 font-medium">Get a free consultation for your property in Bangalore.</p>
                         
@@ -873,6 +890,7 @@
                                 <span class="iconify text-xl group-hover:animate-pulse" data-icon="solar:phone-calling-bold"></span>
                                 Call Us Now
                             </a>
+                            <!-- Dark Theme Chat Button -->
                             <a href="https://wa.me/917994729522" target="_blank" class="px-8 py-4 bg-white/10 border border-white/10 text-white rounded-full font-bold hover:bg-white/20 transition-colors shadow-lg flex items-center justify-center gap-2 group w-full sm:w-auto backdrop-blur-md">
                                 <span class="iconify text-xl text-green-400 group-hover:scale-110 transition-transform" data-icon="ri:whatsapp-fill"></span>
                                 Let's Chat
@@ -882,9 +900,10 @@
                     
                     <!-- Right Side: Mini Google Map Card -->
                     <div class="w-full h-full min-h-[280px]">
+                        <!-- Reverted Map Card Background to Dark Slate -->
                         <div class="relative w-full h-full bg-slate-800 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl group isolate">
                             
-                            <!-- Google Map Embed (Filtered for Dark Theme) -->
+                            <!-- Reverted Map Filter for Dark Mode Look -->
                             <iframe 
                                 src="https://maps.google.com/maps?q=Wesheild%2C%203rd%20Floor%2C%20Raj%20Pinnacle%2C%206th%20Cross%20Rd%2C%20Doddanakundi%20Industrial%20Area%202%2C%20Bengaluru%2C%20Karnataka%20560048&t=&z=13&ie=UTF8&iwloc=&output=embed" 
                                 width="100%" 
@@ -903,9 +922,11 @@
                             <div class="relative z-20 h-full flex flex-col justify-end p-8 sm:p-10">
                                 <div class="flex justify-between items-end">
                                     <div>
+                                        <!-- Reverted Icon bg to white/10 -->
                                         <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/20 shadow-lg">
                                             <span class="iconify text-2xl text-green-400 animate-[bounce_2s_infinite]" data-icon="solar:map-point-bold-duotone"></span>
                                         </div>
+                                        <!-- Reverted Text Colors -->
                                         <h4 class="text-white font-bold text-2xl mb-1 tracking-tight">Visit us</h4>
                                         <p class="text-slate-300 text-sm font-medium">Doddanakundi, Bengaluru</p>
                                     </div>
